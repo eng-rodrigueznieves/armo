@@ -1,0 +1,16 @@
+services:
+  db:
+    image: postgres:16
+    container_name: armo_visual_db
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: armo_visual
+      POSTGRES_USER: armo_user
+      POSTGRES_PASSWORD: armo_password
+    ports:
+      - "5432:5432"
+    volumes:
+      - armo_visual_postgres_data:/var/lib/postgresql/data
+
+volumes:
+  armo_visual_postgres_data:
