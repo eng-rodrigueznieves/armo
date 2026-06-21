@@ -1,0 +1,50 @@
+:root {
+    /* Brand colors */
+    --color-brand-primary: #3f4332;
+    --color-brand-secondary: #b9ae9f;
+    --color-brand-accent: #2a241f;
+
+    /* Backgrounds */
+    --color-bg-default: #f6f2ea;
+    --color-bg-surface: #e8ded0;
+
+    /* Text */
+    --color-text-primary: #2b2926;
+    --color-text-muted: #7d746b;
+    --color-text-on-dark: #f6f2ea;
+
+    /* Borders and feedback */
+    --color-border-default: #d8cec1;
+    --color-feedback-success: #71816d;
+    --color-feedback-warning: #b68b52;
+    --color-feedback-error: #a0615f;
+
+    /* Typography */
+    --font-heading: "Carmorant Garamond", Georgia, serif;
+    --font-body: "Inter", Arial, Helvetica, sans-serif;
+
+    --font-size-h1: 60px;
+    --font-size-h2: 44px;
+    --font-size-h3: 30px;
+    --font-size-body-lg: 18px;
+    --font-size-body: 16px;
+    --font-size-small: 14px;
+
+    --font-weight-regular: 400;
+    --font-weight-medium: 500;
+    --font-weight-semibold: 600;
+
+    /* Spacing */
+    --spacing-xs: 4px;
+    --spacing-sm: 8px;
+    --spacing-md: 16px;
+    --spacing-lg: 24px;
+    --spacing-xl: 40px;
+    --spacing-2xl: 64px;
+    --spacing-3xl: 96px;
+
+    /* Radius */
+    --radius-sm: 8px;
+    --radius-md: 12px;
+    --radius-lg: 20px;
+}
