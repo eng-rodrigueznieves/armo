@@ -1,122 +1,150 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from './assets/vite.svg'
-import heroImg from './assets/hero.png'
-import './App.css'
+import { useEffect, useState } from "react";
+
+import { getHealthStatus } from "./lib/api";
+
+type DashboardCard = {
+  kicker: string;
+  title: string;
+  description: string;
+  actionLabel: string;
+};
+
+const dashboardCards: DashboardCard[] = [
+  {
+    kicker: "Curated solutions",
+    title: "Shop The Set",
+    description:
+      "Present ready-made organization sets for pantry, coffee station, and laundry spaces.",
+    actionLabel: "View sets",
+  },
+  {
+    kicker: "Customer project",
+    title: "Upload Space",
+    description:
+      "Start a personalized consultation by uploading a customer space photo.",
+    actionLabel: "Create project",
+  },
+  {
+    kicker: "Specialized builder",
+    title: "Refrigerator Builder",
+    description:
+      "Plan organized refrigerator sections using templates and ARMO product groups.",
+    actionLabel: "Open builder",
+  },
+  {
+    kicker: "Product library",
+    title: "Product Catalog",
+    description:
+      "Browse ARMO products by category, style, dimensions, material, and price.",
+    actionLabel: "Browse catalog",
+  },
+];
 
 function App() {
-  const [count, setCount] = useState(0)
+  const [apiStatus, setApiStatus] = useState("Checking API connection...");
+  const [isApiOnline, setIsApiOnline] = useState(false);
+
+  useEffect(() => {
+    let isMounted = true;
+
+    async function checkApiHealth() {
+      try {
+        const health = await getHealthStatus();
+
+        if (isMounted) {
+          setApiStatus(`${health.service}: ${health.status}`);
+          setIsApiOnline(true);
+        }
+      } catch {
+        if (isMounted) {
+          setApiStatus("API not reachable");
+          setIsApiOnline(false);
+        }
+      }
+    }
+
+    checkApiHealth();
+
+    return () => {
+      isMounted = false;
+    };
+  }, []);
 
   return (
-    <>
-      <section id="center">
-        <div className="hero">
-          <img src={heroImg} className="base" width="170" height="179" alt="" />
-          <img src={reactLogo} className="framework" alt="React logo" />
-          <img src={viteLogo} className="vite" alt="Vite logo" />
-        </div>
-        <div>
-          <h1>Get started</h1>
-          <p>
-            Edit <code>src/App.tsx</code> and save to test <code>HMR</code>
-          </p>
-        </div>
-        <button
-          type="button"
-          className="counter"
-          onClick={() => setCount((count) => count + 1)}
-        >
-          Count is {count}
-        </button>
-      </section>
+    <div className="app-shell">
+      <header className="app-header">
+        <div className="brand-lockup">
+          <div className="brand-mark" aria-hidden="true">
+            A
+          </div>
 
-      <div className="ticks"></div>
-
-      <section id="next-steps">
-        <div id="docs">
-          <svg className="icon" role="presentation" aria-hidden="true">
-            <use href="/icons.svg#documentation-icon"></use>
-          </svg>
-          <h2>Documentation</h2>
-          <p>Your questions, answered</p>
-          <ul>
-            <li>
-              <a href="https://vite.dev/" target="_blank">
-                <img className="logo" src={viteLogo} alt="" />
-                Explore Vite
-              </a>
-            </li>
-            <li>
-              <a href="https://react.dev/" target="_blank">
-                <img className="button-icon" src={reactLogo} alt="" />
-                Learn more
-              </a>
-            </li>
-          </ul>
+          <div className="brand-text">
+            <span className="brand-name">ARMO Visual</span>
+            <span className="brand-subtitle">Internal consultation tool</span>
+          </div>
         </div>
-        <div id="social">
-          <svg className="icon" role="presentation" aria-hidden="true">
-            <use href="/icons.svg#social-icon"></use>
-          </svg>
-          <h2>Connect with us</h2>
-          <p>Join the Vite community</p>
-          <ul>
-            <li>
-              <a href="https://github.com/vitejs/vite" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#github-icon"></use>
-                </svg>
-                GitHub
-              </a>
-            </li>
-            <li>
-              <a href="https://chat.vite.dev/" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#discord-icon"></use>
-                </svg>
-                Discord
-              </a>
-            </li>
-            <li>
-              <a href="https://x.com/vite_js" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#x-icon"></use>
-                </svg>
-                X.com
-              </a>
-            </li>
-            <li>
-              <a href="https://bsky.app/profile/vite.dev" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#bluesky-icon"></use>
-                </svg>
-                Bluesky
-              </a>
-            </li>
-          </ul>
-        </div>
-      </section>
 
-      <div className="ticks"></div>
-      <section id="spacer"></section>
-    </>
-  )
+        <div className="header-status" aria-live="polite">
+          <span
+            className={isApiOnline ? "status-dot is-online" : "status-dot"}
+            aria-hidden="true"
+          />
+          <span>{apiStatus}</span>
+        </div>
+      </header>
+
+      <main className="main-content">
+        <section className="hero">
+          <div className="hero-copy">
+            <p className="eyebrow">ARMO employee workspace</p>
+
+            <h1 className="hero-title">
+              Help customers visualize calm, organized spaces before they buy.
+            </h1>
+
+            <p className="hero-description">
+              Create customer projects, upload space photos, build layouts with
+              ARMO products, and turn each consultation into a clear shopping
+              list.
+            </p>
+          </div>
+
+          <aside className="hero-panel">
+            <div>
+              <p className="panel-label">Current milestone</p>
+              <p className="panel-value">
+                Foundation, employee login, and dashboard shell
+              </p>
+            </div>
+
+            <button className="primary-button" type="button">
+              Start consultation
+            </button>
+          </aside>
+        </section>
+
+        <section>
+          <h2 className="section-heading">Home</h2>
+
+          <div className="dashboard-grid">
+            {dashboardCards.map((card) => (
+              <article className="dashboard-card" key={card.title}>
+                <div>
+                  <p className="card-kicker">{card.kicker}</p>
+                  <h3 className="card-title">{card.title}</h3>
+                  <p className="card-description">{card.description}</p>
+                </div>
+
+                <button className="secondary-button" type="button">
+                  {card.actionLabel}
+                </button>
+              </article>
+            ))}
+          </div>
+        </section>
+      </main>
+    </div>
+  );
 }
 
-export default App
+export default App;
