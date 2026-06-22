@@ -1,144 +1,188 @@
 import { useEffect, useState } from "react";
 
-import { getHealthStatus } from "./lib/api";
+import BrandHeader from "./components/BrandHeader";
+import DashboardCard, { type DashboardCardData } from "./components/DashboardCards";
+import HealthPage from "./components/HealthPage";
+import LoadingScreen from "./components/LoadingScreen";
+import LoginScreen from "./components/LoginScreen";
+import {
+  type EmployeeUser,
+  getCurrentEmployee,
+  loginEmployee,
+  logoutEmployee,
+} from "./lib/api";
 
-type DashboardCard = {
-  kicker: string;
-  title: string;
-  description: string;
-  actionLabel: string;
-};
-
-const dashboardCards: DashboardCard[] = [
+const dashboardCards: DashboardCardData[] = [
   {
-    kicker: "Curated solutions",
+    kicker: "Curated sets",
     title: "Shop The Set",
-    description:
-      "Present ready-made organization sets for pantry, coffee station, and laundry spaces.",
-    actionLabel: "View sets",
+    description: "Ready-made solutions for common spaces.",
+    actionLabel: "Open sets",
   },
   {
-    kicker: "Customer project",
+    kicker: "Upload space",
     title: "Upload Space",
-    description:
-      "Start a personalized consultation by uploading a customer space photo.",
-    actionLabel: "Create project",
+    description: "Begin with a customer photo.",
+    actionLabel: "Upload photo",
   },
   {
-    kicker: "Specialized builder",
-    title: "Refrigerator Builder",
-    description:
-      "Plan organized refrigerator sections using templates and ARMO product groups.",
+    kicker: "Build a layout",
+    title: "Builder",
+    description: "Choose a space and create a visual plan.",
     actionLabel: "Open builder",
   },
   {
-    kicker: "Product library",
+    kicker: "Catalog",
     title: "Product Catalog",
-    description:
-      "Browse ARMO products by category, style, dimensions, material, and price.",
-    actionLabel: "Browse catalog",
+    description: "Browse ARMO products and details.",
+    actionLabel: "Browse products",
   },
 ];
 
+function getEmployeeDisplayName(employee: EmployeeUser) {
+  const fullName = `${employee.first_name} ${employee.last_name}`.trim();
+
+  return fullName || employee.username;
+}
+
 function App() {
-  const [apiStatus, setApiStatus] = useState("Checking API connection...");
-  const [isApiOnline, setIsApiOnline] = useState(false);
+  const [employee, setEmployee] = useState<EmployeeUser | null>(null);
+  const [isCheckingSession, setIsCheckingSession] = useState(true);
+
+  const [username, setUsername] = useState("");
+  const [password, setPassword] = useState("");
+  const [loginError, setLoginError] = useState("");
+  const [isSubmittingLogin, setIsSubmittingLogin] = useState(false);
+
+  const currentPath = window.location.pathname;
 
   useEffect(() => {
     let isMounted = true;
 
-    async function checkApiHealth() {
+    async function initializeSession() {
       try {
-        const health = await getHealthStatus();
+        const currentEmployee = await getCurrentEmployee();
 
         if (isMounted) {
-          setApiStatus(`${health.service}: ${health.status}`);
-          setIsApiOnline(true);
+          setEmployee(currentEmployee);
         }
       } catch {
         if (isMounted) {
-          setApiStatus("API not reachable");
-          setIsApiOnline(false);
+          setEmployee(null);
+        }
+      } finally {
+        if (isMounted) {
+          setIsCheckingSession(false);
         }
       }
     }
 
-    checkApiHealth();
+    if (currentPath !== "/health" && currentPath !== "/info") {
+      initializeSession();
+    } else {
+      setIsCheckingSession(false);
+    }
 
     return () => {
       isMounted = false;
     };
-  }, []);
+  }, [currentPath]);
+
+  async function handleLogin(event: React.SyntheticEvent<HTMLFormElement>) {
+    event.preventDefault();
+
+    setLoginError("");
+    setIsSubmittingLogin(true);
+
+    try {
+      const response = await loginEmployee(username, password);
+
+      setEmployee(response.user);
+      setUsername("");
+      setPassword("");
+    } catch (error) {
+      const message =
+        error instanceof Error
+          ? error.message
+          : "Unable to log in. Please try again.";
+
+      setLoginError(message);
+    } finally {
+      setIsSubmittingLogin(false);
+    }
+  }
+
+  async function handleLogout() {
+    try {
+      await logoutEmployee();
+      setEmployee(null);
+    } catch {
+      setLoginError("Unable to log out. Please try again.");
+    }
+  }
+
+  if (currentPath === "/health" || currentPath === "/info") {
+    return <HealthPage />;
+  }
+
+  if (isCheckingSession) {
+    return <LoadingScreen />;
+  }
+
+  if (!employee) {
+    return (
+      <LoginScreen
+        username={username}
+        password={password}
+        loginError={loginError}
+        isSubmittingLogin={isSubmittingLogin}
+        onUsernameChange={setUsername}
+        onPasswordChange={setPassword}
+        onSubmit={handleLogin}
+      />
+    );
+  }
 
   return (
     <div className="app-shell">
-      <header className="app-header">
-        <div className="brand-lockup">
-          <div className="brand-mark" aria-hidden="true">
-            A
-          </div>
-
-          <div className="brand-text">
-            <span className="brand-name">ARMO Visual</span>
-            <span className="brand-subtitle">Internal consultation tool</span>
-          </div>
-        </div>
-
-        <div className="header-status" aria-live="polite">
-          <span
-            className={isApiOnline ? "status-dot is-online" : "status-dot"}
-            aria-hidden="true"
-          />
-          <span>{apiStatus}</span>
-        </div>
-      </header>
+      <BrandHeader
+        rightSlot={
+          <button
+            className="secondary-button compact-button"
+            onClick={handleLogout}
+            type="button"
+          >
+            Log out
+          </button>
+        }
+      />
 
       <main className="main-content">
         <section className="hero">
           <div className="hero-copy">
-            <p className="eyebrow">ARMO employee workspace</p>
-
-            <h1 className="hero-title">
-              Help customers visualize calm, organized spaces before they buy.
-            </h1>
-
-            <p className="hero-description">
-              Create customer projects, upload space photos, build layouts with
-              ARMO products, and turn each consultation into a clear shopping
-              list.
-            </p>
+            <p className="eyebrow">ARMO Visual</p>
+            <h1 className="hero-title">Create a visual plan with intention.</h1>
+            <p className="hero-description">Upload a customer photo, place ARMO products, and prepare a clear shopping list.</p>
           </div>
 
           <aside className="hero-panel">
             <div>
-              <p className="panel-label">Current milestone</p>
-              <p className="panel-value">
-                Foundation, employee login, and dashboard shell
-              </p>
+              <p className="panel-label">New consultation</p>
+              <p className="panel-value">Start with a customer space.</p>
             </div>
 
             <button className="primary-button" type="button">
-              Start consultation
+              Start
             </button>
           </aside>
         </section>
 
         <section>
-          <h2 className="section-heading">Home</h2>
+          <h2 className="section-heading">Choose a path</h2>
 
           <div className="dashboard-grid">
             {dashboardCards.map((card) => (
-              <article className="dashboard-card" key={card.title}>
-                <div>
-                  <p className="card-kicker">{card.kicker}</p>
-                  <h3 className="card-title">{card.title}</h3>
-                  <p className="card-description">{card.description}</p>
-                </div>
-
-                <button className="secondary-button" type="button">
-                  {card.actionLabel}
-                </button>
-              </article>
+              <DashboardCard card={card} key={card.title} />
             ))}
           </div>
         </section>

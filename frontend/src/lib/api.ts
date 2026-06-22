@@ -1,10 +1,38 @@
 export const API_BASE_URL = 
-    import.meta.env.VITE_API_BASE_URL ?? "http://127.0.0.1:8000/api"
+    import.meta.env.VITE_API_BASE_URL ?? "http://localhost:8000/api"
 
 export type HealthResponse = {
     status: string;
     service: string;
 };
+
+export type EmployeeUser = {
+    id: number;
+    username: string;
+    email: string;
+    first_name: string;
+    last_name: string;
+    is_staff: boolean;
+};
+
+export type AuthResponse = {
+    detail?: string;
+    user: EmployeeUser;
+};
+
+function getCookie(name: string): string | null {
+    const cookies = document.cookie ? document.cookie.split("; ") : [];
+
+    for (const cookie of cookies) {
+        const [cookieName, ...cookieValueParts] = cookie.split("=");
+
+        if (cookieName == name) {
+            return decodeURIComponent(cookieValueParts.join("="));
+        }
+    }
+
+    return null;
+}
 
 export async function getHealthStatus(): Promise<HealthResponse> {
     const response = await fetch(`${API_BASE_URL}/health`, {
@@ -16,4 +44,81 @@ export async function getHealthStatus(): Promise<HealthResponse> {
     }
 
     return response.json();
+}
+
+export async function getCsrfToken(): Promise<string> {
+    const response = await fetch(`${API_BASE_URL}/auth/csrf`, {
+        credentials: "include",
+    });
+
+    if (!response.ok) {
+        throw new Error("Unable to prepare secure login.");
+    }
+
+    const csrfToken = getCookie("csrftoken");
+
+    if (!csrfToken) {
+        throw new Error("CSRF token was not set.");
+    }
+
+    return csrfToken;
+}
+
+export async function loginEmployee(username: string, password: string): Promise<AuthResponse> {
+    const csrfToken = await getCsrfToken();
+
+    const response = await fetch(`${API_BASE_URL}/auth/login/`, {
+        method: "POST",
+        credentials: "include",
+        headers: {
+            "Content-Type": "application/json",
+            "X-CSRFToken": csrfToken,
+        },
+        body: JSON.stringify({
+            username,
+            password
+        }),
+    });
+
+    const data = await response.json();
+
+    if (!response.ok) {
+        throw new Error(data.detail ?? "Unable to log in.");
+    }
+
+    return data;
+}
+
+export async function getCurrentEmployee(): Promise<EmployeeUser | null> {
+    const response = await fetch(`${API_BASE_URL}/auth/me/`, {
+        credentials: "include",
+    });
+
+    if (response.status === 403 || response.status === 401) {
+        return null;
+    }
+
+    if (!response.ok) {
+        throw new Error("Unable to load current employee.");
+    }
+
+    const data: AuthResponse = await response.json();
+
+    return data.user;
+}
+
+export async function logoutEmployee(): Promise<void> {
+    const csrfToken = await getCsrfToken();
+
+    const response = await fetch(`${API_BASE_URL}/auth/logout/`, {
+        method: "POST",
+        credentials: "include",
+        headers: {
+            "X-CSRFToken": csrfToken,
+        },
+    });
+
+    if (!response.ok) {
+        throw new Error("Unable to log out.");
+    }
 }
