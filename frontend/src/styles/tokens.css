@@ -1,50 +1,70 @@
 :root {
-    /* Brand colors */
-    --color-brand-primary: #3f4332;
-    --color-brand-secondary: #b9ae9f;
-    --color-brand-accent: #2a241f;
+  /* Brand colors */
+  --color-forest: #2f3a2d;
+  --color-chocolate: #3a281f;
+  --color-walnut: #5a3d2b;
+  --color-taupe: #b9ae9f;
 
-    /* Backgrounds */
-    --color-bg-default: #f6f2ea;
-    --color-bg-surface: #e8ded0;
+  /* Backgrounds */
+  --color-cream: #f7f1e7;
+  --color-sand: #eadfce;
+  --color-oat: #d8c8b5;
 
-    /* Text */
-    --color-text-primary: #2b2926;
-    --color-text-muted: #7d746b;
-    --color-text-on-dark: #f6f2ea;
+  /* Text */
+  --color-charcoal: #272420;
+  --color-stone: #675e55;
+  --color-linen: #d2c3b2;
 
-    /* Borders and feedback */
-    --color-border-default: #d8cec1;
-    --color-feedback-success: #71816d;
-    --color-feedback-warning: #b68b52;
-    --color-feedback-error: #a0615f;
+  /* Feedback */
+  --color-sage: #66785f;
+  --color-amber: #a9783f;
+  --color-clay: #9a5652;
 
-    /* Typography */
-    --font-heading: "Carmorant Garamond", Georgia, serif;
-    --font-body: "Inter", Arial, Helvetica, sans-serif;
+  /* Semantic colors */
+  --color-brand-primary: var(--color-forest);
+  --color-brand-secondary: var(--color-taupe);
+  --color-brand-accent: var(--color-chocolate);
 
-    --font-size-h1: 60px;
-    --font-size-h2: 44px;
-    --font-size-h3: 30px;
-    --font-size-body-lg: 18px;
-    --font-size-body: 16px;
-    --font-size-small: 14px;
+  --color-bg-default: var(--color-cream);
+  --color-bg-surface: var(--color-sand);
+  --color-bg-raised: rgba(247, 241, 231, 0.86);
 
-    --font-weight-regular: 400;
-    --font-weight-medium: 500;
-    --font-weight-semibold: 600;
+  --color-text-primary: var(--color-charcoal);
+  --color-text-muted: var(--color-stone);
+  --color-text-on-dark: var(--color-cream);
 
-    /* Spacing */
-    --spacing-xs: 4px;
-    --spacing-sm: 8px;
-    --spacing-md: 16px;
-    --spacing-lg: 24px;
-    --spacing-xl: 40px;
-    --spacing-2xl: 64px;
-    --spacing-3xl: 96px;
+  --color-border-default: var(--color-linen);
 
-    /* Radius */
-    --radius-sm: 8px;
-    --radius-md: 12px;
-    --radius-lg: 20px;
+  --color-feedback-success: var(--color-sage);
+  --color-feedback-warning: var(--color-amber);
+  --color-feedback-error: var(--color-clay);
+
+  /* Typography */
+  --font-heading: "Cormorant Garamond", Georgia, serif;
+  --font-body: "Inter", Arial, Helvetica, sans-serif;
+
+  --font-size-h1: 60px;
+  --font-size-h2: 44px;
+  --font-size-h3: 30px;
+  --font-size-body-lg: 18px;
+  --font-size-body: 16px;
+  --font-size-small: 14px;
+
+  --font-weight-regular: 400;
+  --font-weight-medium: 500;
+  --font-weight-semibold: 600;
+
+  /* Spacing */
+  --spacing-xs: 4px;
+  --spacing-sm: 8px;
+  --spacing-md: 16px;
+  --spacing-lg: 24px;
+  --spacing-xl: 40px;
+  --spacing-2xl: 64px;
+  --spacing-3xl: 96px;
+
+  /* Radius */
+  --radius-sm: 8px;
+  --radius-md: 12px;
+  --radius-lg: 20px;
 }
