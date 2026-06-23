@@ -14,7 +14,7 @@ class ProductImageSerializer(serializers.ModelSerializer):
         if not obj.image:
             return None
         
-        request = self.context("request")
+        request = self.context.get("request")
         image_url = obj.image.url
 
         if request:
