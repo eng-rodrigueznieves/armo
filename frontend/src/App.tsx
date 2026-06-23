@@ -5,12 +5,8 @@ import DashboardCard, { type DashboardCardData } from "./components/DashboardCar
 import HealthPage from "./components/HealthPage";
 import LoadingScreen from "./components/LoadingScreen";
 import LoginScreen from "./components/LoginScreen";
-import {
-  type EmployeeUser,
-  getCurrentEmployee,
-  loginEmployee,
-  logoutEmployee,
-} from "./lib/api";
+import ProductCatalogPage from "./components/ProductCatalogPage";
+import {type EmployeeUser, getCurrentEmployee, loginEmployee, logoutEmployee} from "./lib/api";
 
 const dashboardCards: DashboardCardData[] = [
   {
@@ -18,32 +14,30 @@ const dashboardCards: DashboardCardData[] = [
     title: "Shop The Set",
     description: "Ready-made solutions for common spaces.",
     actionLabel: "Open sets",
+    actionHref: "/sets",
   },
   {
     kicker: "Upload space",
     title: "Upload Space",
     description: "Begin with a customer photo.",
     actionLabel: "Upload photo",
+    actionHref: "/upload",
   },
   {
     kicker: "Build a layout",
     title: "Builder",
     description: "Choose a space and create a visual plan.",
     actionLabel: "Open builder",
+    actionHref: "/builder",
   },
   {
     kicker: "Catalog",
     title: "Product Catalog",
     description: "Browse ARMO products and details.",
     actionLabel: "Browse products",
+    actionHref: "/products",
   },
 ];
-
-function getEmployeeDisplayName(employee: EmployeeUser) {
-  const fullName = `${employee.first_name} ${employee.last_name}`.trim();
-
-  return fullName || employee.username;
-}
 
 function App() {
   const [employee, setEmployee] = useState<EmployeeUser | null>(null);
@@ -140,6 +134,15 @@ function App() {
         onPasswordChange={setPassword}
         onSubmit={handleLogin}
       />
+    );
+  }
+
+  if (currentPath === "/products") {
+    return (
+      <div className="app-shell">
+        <BrandHeader rightSlot={<button className="secondary-button compact-button" onClick={handleLogout} type="button">Log out</button>}/>
+        <ProductCatalogPage />
+      </div>
     );
   }
 

@@ -3,6 +3,7 @@ export type DashboardCardData = {
   title: string;
   description: string;
   actionLabel: string;
+  actionHref: string;
 };
 
 type DashboardCardProps = {
@@ -17,9 +18,9 @@ function DashboardCard({ card }: DashboardCardProps) {
         <h3 className="card-title">{card.title}</h3>
         <p className="card-description">{card.description}</p>
       </div>
-      <button className="secondary-button" type="button">
+      <a href={card.actionHref} className="secondary-link-button">
         {card.actionLabel}
-      </button>
+      </a>
     </article>
   );
 }

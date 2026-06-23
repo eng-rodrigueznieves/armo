@@ -20,6 +20,56 @@ export type AuthResponse = {
     user: EmployeeUser;
 };
 
+export type ProductImage = {
+    id: number;
+    image_url: string | null;
+    alt_text: string;
+    is_primary: boolean;
+};
+
+export type ProductDimensions = {
+    width: string;
+    depth: string;
+    height: string;
+    unit: string;
+};
+
+export type Product = {
+    id: number;
+    name: string;
+    sku: string;
+    category: string
+    description: string;
+    price: string;
+    inventory_quantity: number;
+    width: string;
+    depth: string;
+    height: string;
+    dimensions: ProductDimensions;
+    material: string;
+    color: string;
+    recommended_space: string;
+    recommended_space_label: string;
+    recommended_style: string;
+    recommended_style_label: string;
+    is_active: boolean;
+    primary_image: ProductImage | null;
+    images: ProductImage[];
+    created_at: string;
+    updated_at: string;
+};
+
+export type ProductListResponse = {
+    count: number;
+    results: Product[];
+};
+
+export type ProductFilters = {
+    query?: string;
+    space?: string;
+    style?: string;
+};
+
 function getCookie(name: string): string | null {
     const cookies = document.cookie ? document.cookie.split("; ") : [];
 
@@ -121,4 +171,35 @@ export async function logoutEmployee(): Promise<void> {
     if (!response.ok) {
         throw new Error("Unable to log out.");
     }
+}
+
+export async function getProducts(filters: ProductFilters = {},): Promise<ProductListResponse> {
+    const params = new URLSearchParams();
+
+    if (filters.query) {
+        params.set("q", filters.query);
+    }
+
+    if (filters.space) {
+        params.set("space", filters.space);
+    }
+
+    if (filters.style) {
+        params.set("style", filters.style);
+    }
+
+    const queryString = params.toString();
+    const url = queryString 
+        ? `${API_BASE_URL}/products/?${queryString}`
+        : `${API_BASE_URL}/products/`;
+
+    const response = await fetch(url, {
+        credentials: "include"
+    });
+
+    if (!response.ok) {
+        throw new Error("Unable to load products.");
+    }
+    
+    return response.json();
 }
