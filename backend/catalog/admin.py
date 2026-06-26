@@ -5,7 +5,7 @@ from .models import Product, ProductImage
 
 class ProductImageInline(admin.TabularInline):
     model = ProductImage
-    extra = 1
+    extra = 3
     fields = ["image", "alt_text", "is_primary"]
 
 
@@ -15,16 +15,16 @@ class ProductAdmin(admin.ModelAdmin):
         "name",
         "sku",
         "category",
+        "size",
         "price",
         "inventory_quantity",
         "recommended_space",
-        "recommended_style",
         "is_active",
     ]
     list_filter = [
         "category",
+        "size",
         "recommended_space",
-        "recommended_style",
         "is_active",
     ]
     search_fields = [
@@ -48,6 +48,7 @@ class ProductAdmin(admin.ModelAdmin):
                     "name",
                     "sku",
                     "category",
+                    "size",
                     "description",
                     "is_active",
                 ]
@@ -79,7 +80,6 @@ class ProductAdmin(admin.ModelAdmin):
                     "material",
                     "color",
                     "recommended_space",
-                    "recommended_style",
                 ]
             },
         ),

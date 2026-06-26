@@ -12,18 +12,17 @@ class RecommendedSpace(models.TextChoices):
     OTHER = "other", "Other"
 
 
-class RecommendedStyle(models.TextChoices):
-    CLEAR_ACRYLIC = "clear_acrylic", "Clear Acrylic"
-    BAMBOO_NATURAL = "bamboo_natural", "Bamboo / Natural"
-    WHITE_MINIMAL = "white_minimal", "White Minimal"
-    CREAM_NEUTRAL = "cream_neutral", "Cream Neutral"
-    MIXED = "mixed", "Mixed"
+class ProductSize(models.TextChoices):
+    SMALL = "small", "Small"
+    MEDIUM = "medium", "Medium"
+    LARGE = "large", "Large"
 
 
 class Product(models.Model):
     name = models.CharField(max_length=160)
     sku = models.CharField(max_length=80, unique=True)
     category = models.CharField(max_length=120)
+    size = models.CharField(max_length=20, choices=ProductSize.choices, default=ProductSize.MEDIUM)
     price = models.DecimalField(max_digits=8, decimal_places=2, validators=[MinValueValidator(0)])
     inventory_quantity = models.PositiveIntegerField(default=0)
     width = models.DecimalField(max_digits=7, decimal_places=2, validators=[MinValueValidator(0)])
@@ -32,7 +31,6 @@ class Product(models.Model):
     material = models.CharField(max_length=120)
     color = models.CharField(max_length=120)
     recommended_space = models.CharField(max_length=40, choices=RecommendedSpace.choices)
-    recommended_style = models.CharField(max_length=40, choices=RecommendedStyle.choices)
     description = models.TextField(blank=True)
     is_active = models.BooleanField(default=True)
     created_at = models.DateField(auto_now_add=True)
@@ -45,7 +43,6 @@ class Product(models.Model):
             models.Index(fields=["sku"]),
             models.Index(fields=["category"]),
             models.Index(fields=["recommended_space"]),
-            models.Index(fields=["recommended_style"]),
         ]
 
     def __str__(self):

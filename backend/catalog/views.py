@@ -10,10 +10,11 @@ from .serializer import ProductSerializer
 class ProductListAPIView(APIView):
     def get(self, request):
         products = Product.objects.filter(is_active=True).prefetch_related("images")
+
         search_query = request.query_params.get("q")
         category = request.query_params.get("category")
         recommended_space = request.query_params.get("space")
-        recommended_style = request.query_params.get("style")
+        size = request.query_params.get("size")
 
         if search_query:
             products = products.filter(
@@ -30,8 +31,8 @@ class ProductListAPIView(APIView):
         if recommended_space:
             products = products.filter(recommended_space=recommended_space)
 
-        if recommended_style:
-            products = products.filter(recommended_style=recommended_style)
+        if size:
+            products = products.filter(size=size)
 
         products = products.order_by("name")
 

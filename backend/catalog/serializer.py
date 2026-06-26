@@ -27,13 +27,9 @@ class ProductSerializer(serializers.ModelSerializer):
     images = ProductImageSerializer(many=True, read_only=True)
     primary_image = serializers.SerializerMethodField()
     dimensions = serializers.SerializerMethodField()
-
-    recommended_space_label = serializers.CharField(
-        source="get_recommended_space_display", read_only=True
-    )
-    recommended_style_label = serializers.CharField(
-        source="get_recommended_style_display", read_only=True
-    )
+    size_label = serializers.CharField(source="get_size_display", read_only=True)
+    recommended_space_label = serializers.CharField(source="get_recommended_space_display", read_only=True)
+    dimensions = serializers.SerializerMethodField()
 
     class Meta:
         model = Product
@@ -43,6 +39,8 @@ class ProductSerializer(serializers.ModelSerializer):
             "sku",
             "category",
             "description",
+            "size",
+            "size_label",
             "price",
             "inventory_quantity",
             "width",
@@ -53,8 +51,6 @@ class ProductSerializer(serializers.ModelSerializer):
             "color",
             "recommended_space",
             "recommended_space_label",
-            "recommended_style",
-            "recommended_style_label",
             "is_active",
             "primary_image",
             "images",
