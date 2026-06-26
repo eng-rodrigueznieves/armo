@@ -6,6 +6,7 @@ import HealthPage from "./components/HealthPage";
 import LoadingScreen from "./components/LoadingScreen";
 import LoginScreen from "./components/LoginScreen";
 import ProductCatalogPage from "./components/ProductCatalogPage";
+import ProductDetailPage from "./components/ProductDetailPage";
 import {type EmployeeUser, getCurrentEmployee, loginEmployee, logoutEmployee} from "./lib/api";
 
 const dashboardCards: DashboardCardData[] = [
@@ -49,6 +50,7 @@ function App() {
   const [isSubmittingLogin, setIsSubmittingLogin] = useState(false);
 
   const currentPath = window.location.pathname;
+  const productDetailMatch = currentPath.match(/^\/products\/(\d+)\/?$/);
 
   useEffect(() => {
     let isMounted = true;
@@ -142,6 +144,15 @@ function App() {
       <div className="app-shell">
         <BrandHeader rightSlot={<button className="secondary-button compact-button" onClick={handleLogout} type="button">Log out</button>}/>
         <ProductCatalogPage />
+      </div>
+    );
+  }
+
+  if (productDetailMatch) {
+    return (
+      <div className="app-shell">
+        <BrandHeader rightSlot={<button className="secondary-button compact-button" onClick={handleLogout} type="button">Log out</button>}/>
+        <ProductDetailPage productId={(Number(productDetailMatch[1]))} />
       </div>
     );
   }

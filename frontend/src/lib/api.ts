@@ -40,6 +40,8 @@ export type Product = {
     sku: string;
     category: string
     description: string;
+    size: string;
+    size_label: string;
     price: string;
     inventory_quantity: number;
     width: string;
@@ -50,8 +52,6 @@ export type Product = {
     color: string;
     recommended_space: string;
     recommended_space_label: string;
-    recommended_style: string;
-    recommended_style_label: string;
     is_active: boolean;
     primary_image: ProductImage | null;
     images: ProductImage[];
@@ -202,4 +202,24 @@ export async function getProducts(filters: ProductFilters = {},): Promise<Produc
     }
     
     return response.json();
+}
+
+export async function getProduct(productId: number): Promise<Product> {
+    const response = await fetch(`${API_BASE_URL}/products/${productId}/`, {
+        credentials: "include",
+    });
+
+    if (!response.ok) {
+        throw new Error("Unable to load product.")
+    }
+
+    return response.json();
+}
+
+export function getBackendBaseUrl() {
+    return API_BASE_URL.replace(/\/api\/?$/, "");
+}
+
+export function getProductAdminUrl(productId: number) {
+    return `${getBackendBaseUrl()}/admin/catalog/product/${productId}/change/`;
 }

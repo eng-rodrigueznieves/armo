@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 
+import { formatPrice } from "../lib/format";
 import { getProducts, type Product } from "../lib/api";
 
 const spaceOptions = [
@@ -22,13 +23,6 @@ const styleOptions = [
   { value: "cream_neutral", label: "Cream Neutral" },
   { value: "mixed", label: "Mixed" },
 ];
-
-function formatPrice(price: string) {
-  return new Intl.NumberFormat("en-US", {
-    style: "currency",
-    currency: "USD",
-  }).format(Number(price));
-}
 
 function ProductCatalogPage() {
   const [products, setProducts] = useState<Product[]>([]);
@@ -226,8 +220,8 @@ function ProductCatalogPage() {
                   </div>
 
                   <div>
-                    <dt>Style</dt>
-                    <dd>{product.recommended_style_label}</dd>
+                    <dt>Size</dt>
+                    <dd>{product.size_label}</dd>
                   </div>
 
                   <div>
@@ -252,6 +246,9 @@ function ProductCatalogPage() {
                     <dd>{product.inventory_quantity}</dd>
                   </div>
                 </dl>
+                
+                <a href={`/products/${product.id}`} className="product-detail-link">View details</a>
+
               </div>
             </article>
           ))}
